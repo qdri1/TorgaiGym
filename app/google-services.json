@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "604286878800",
+    "firebase_url": "https://torgaigym.firebaseio.com",
+    "project_id": "torgaigym",
+    "storage_bucket": "torgaigym.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:604286878800:android:903298727309b0b0",
+        "android_client_info": {
+          "package_name": "com.torgaigym.torgai.torgaigym"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "604286878800-041iu2ph9hv656ie0deqoirsnk1pc178.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "604286878800-041iu2ph9hv656ie0deqoirsnk1pc178.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAylRKXkioa046QMVT4TifbxJsrQvdP3rQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
