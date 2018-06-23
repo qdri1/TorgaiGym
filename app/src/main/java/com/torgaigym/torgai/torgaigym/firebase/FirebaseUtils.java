@@ -9,6 +9,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.torgaigym.torgai.torgaigym.classes.Exercise;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FirebaseUtils {
 
     private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -17,16 +20,19 @@ public class FirebaseUtils {
 
     }
 
-    public void writeDayExercises(String dayId, Exercise exercise) {
-        mDatabase.child(FirebaseConsts.dayExerciseId).child(dayId).setValue(exercise);
+    public void writeDayExercises(String dayId, String exerciseId, Exercise exercise) {
+        mDatabase.child(FirebaseConsts.dayExerciseId).child(dayId).child(exerciseId).setValue(exercise);
     }
 
     public void readDayExercises(String dayId, final ExerciseListener listener) {
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Exercise exercise = dataSnapshot.getValue(Exercise.class);
-                listener.getResponse(exercise);
+                List<Exercise> exercises = new ArrayList<>();
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    exercises.add(child.getValue(Exercise.class));
+                }
+                listener.getResponse(exercises);
             }
 
             @Override
@@ -38,7 +44,7 @@ public class FirebaseUtils {
     }
 
     public interface ExerciseListener {
-        void getResponse(Exercise exercise);
+        void getResponse(List<Exercise> exercises);
     }
 
 }

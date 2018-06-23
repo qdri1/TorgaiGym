@@ -8,5 +8,6 @@ public class FirebaseConsts {
     public static final String dayThree = "dayThree";
     public static final String dayFour = "dayFour";
     public static final String dayFive = "dayFive";
+    public static final String exerciseN = "exerciseN";
 
 }

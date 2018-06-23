@@ -15,6 +15,8 @@ import com.torgaigym.torgai.torgaigym.classes.Exercise;
 import com.torgaigym.torgai.torgaigym.firebase.FirebaseConsts;
 import com.torgaigym.torgai.torgaigym.firebase.FirebaseUtils;
 
+import java.util.List;
+
 public class AdminsActivity extends AppCompatActivity implements FirebaseUtils.ExerciseListener, TabLayout.OnTabSelectedListener, View.OnClickListener {
 
     private ViewPager viewPager;
@@ -44,29 +46,37 @@ public class AdminsActivity extends AppCompatActivity implements FirebaseUtils.E
     }
 
     @Override
-    public void getResponse(Exercise exercise) {
-        System.out.println("CHECK_READ### " + exercise.getName() + " / " + exercise.getDescription());
+    public void getResponse(List<Exercise> exercises) {
+
     }
 
     @Override
     public void onClick(View v) {
-        //                FirebaseUtils firebaseUtils = new FirebaseUtils();
-//                Exercise exercise = new Exercise("ExampleOne", "This is just example");
-//                firebaseUtils.writeDayExercises(FirebaseConsts.dayOne, exercise);
-//                exercise = new Exercise("ExampleTwo", "This is just example");
-//                firebaseUtils.writeDayExercises(FirebaseConsts.dayTwo, exercise);
-//                exercise = new Exercise("ExampleThree", "This is just example");
-//                firebaseUtils.writeDayExercises(FirebaseConsts.dayThree, exercise);
-//                exercise = new Exercise("ExampleFour", "This is just example");
-//                firebaseUtils.writeDayExercises(FirebaseConsts.dayFour, exercise);
-//                exercise = new Exercise("ExampleFive", "This is just example");
-//                firebaseUtils.writeDayExercises(FirebaseConsts.dayFive, exercise);
-
-        FirebaseUtils firebaseUtils = new FirebaseUtils();
-        firebaseUtils.readDayExercises(FirebaseConsts.dayOne, AdminsActivity.this);
-
         Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
+    }
+
+    private void writeDataToFirebase() {
+        FirebaseUtils firebaseUtils = new FirebaseUtils();
+        Exercise exercise = new Exercise("ExampleOne", "This is just example1");
+        firebaseUtils.writeDayExercises(FirebaseConsts.dayOne, FirebaseConsts.exerciseN + "1", exercise);
+        exercise = new Exercise("ExampleOneTwo", "This is just example2");
+        firebaseUtils.writeDayExercises(FirebaseConsts.dayOne, FirebaseConsts.exerciseN + "2", exercise);
+        exercise = new Exercise("ExampleOneThree", "This is just example3");
+        firebaseUtils.writeDayExercises(FirebaseConsts.dayOne, FirebaseConsts.exerciseN + "3", exercise);
+        exercise = new Exercise("ExampleTwo", "This is just example");
+        firebaseUtils.writeDayExercises(FirebaseConsts.dayTwo, FirebaseConsts.exerciseN + "1", exercise);
+        exercise = new Exercise("ExampleThree", "This is just example");
+        firebaseUtils.writeDayExercises(FirebaseConsts.dayThree, FirebaseConsts.exerciseN + "1", exercise);
+        exercise = new Exercise("ExampleFour", "This is just example");
+        firebaseUtils.writeDayExercises(FirebaseConsts.dayFour, FirebaseConsts.exerciseN + "1", exercise);
+        exercise = new Exercise("ExampleFive", "This is just example");
+        firebaseUtils.writeDayExercises(FirebaseConsts.dayFive, FirebaseConsts.exerciseN + "1", exercise);
+    }
+
+    private void readDataFromFirebase() {
+        FirebaseUtils firebaseUtils = new FirebaseUtils();
+        firebaseUtils.readDayExercises(FirebaseConsts.dayOne, AdminsActivity.this);
     }
 
     @Override
