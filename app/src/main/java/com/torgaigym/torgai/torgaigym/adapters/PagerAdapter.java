@@ -41,4 +41,21 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     public int getCount() {
         return tabs;
     }
+
+    public int getPositionOfLastAddedExercise(int currentDayPosition) {
+        switch (currentDayPosition) {
+            case 0:
+                return new DayOneFragment().lastPositionOfList();
+            case 1:
+                return new DayTwoFragment().lastPositionOfList();
+            case 2:
+                return new DayThreeFragment().lastPositionOfList();
+            case 3:
+                return new DayFourFragment().lastPositionOfList();
+            case 4:
+                return new DayFiveFragment().lastPositionOfList();
+            default:
+                return 0;
+        }
+    }
 }

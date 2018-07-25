@@ -12,11 +12,11 @@ import com.torgaigym.torgai.torgaigym.classes.Exercise;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FirebaseUtils {
+public class FirebaseUtilsModel {
 
     private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
-    public FirebaseUtils() {
+    public FirebaseUtilsModel() {
 
     }
 

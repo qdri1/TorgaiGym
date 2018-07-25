@@ -27,4 +27,8 @@ public class DayTwoFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_day_two, container, false);
     }
 
+    public int lastPositionOfList() {
+        return 0;
+    }
+
 }
