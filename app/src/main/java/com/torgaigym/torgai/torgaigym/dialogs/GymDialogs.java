@@ -21,6 +21,7 @@ public class GymDialogs {
         titleView.setText(title);
         final EditText editNameView = view.findViewById(R.id.name);
         final EditText editDescView = view.findViewById(R.id.desc);
+        dialogBuilder.setView(view);
         dialogBuilder.setNegativeButton(R.string.action_no, null);
         dialogBuilder.setPositiveButton(R.string.action_save, new DialogInterface.OnClickListener() {
             @Override

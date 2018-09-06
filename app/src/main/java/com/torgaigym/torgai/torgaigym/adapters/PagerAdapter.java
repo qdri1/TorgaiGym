@@ -2,8 +2,9 @@ package com.torgaigym.torgai.torgaigym.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.view.View;
 
+import com.torgaigym.torgai.torgaigym.compat.FragmentStatePagerAdapter;
 import com.torgaigym.torgai.torgaigym.fragments.DayFiveFragment;
 import com.torgaigym.torgai.torgaigym.fragments.DayFourFragment;
 import com.torgaigym.torgai.torgaigym.fragments.DayOneFragment;
@@ -35,6 +36,31 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
             default:
                 return null;
         }
+    }
+
+    @Override
+    protected void handleGetItemInbalidated(View container, Fragment oldFragment, Fragment newFragment) {
+        System.out.println("#########oldFragment: " + oldFragment);
+        System.out.println("#########newFragment: " + newFragment);
+
+        int position = getFragmentPosition(newFragment);
+
+
+    }
+
+    @Override
+    protected int getFragmentPosition(Fragment fragment) {
+
+
+        switch (fragment.getClass().getSimpleName()) {
+            case "asd":
+
+                break;
+        }
+        System.out.println("#########classes1: " + fragment.getClass().getSimpleName());
+        System.out.println("#########classes2: " + DayFourFragment.TAG);
+
+        return 0;
     }
 
     @Override

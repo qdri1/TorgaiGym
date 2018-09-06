@@ -32,4 +32,8 @@ public class AdminsPresenter {
         model.writeDayExercises(dayConst, FirebaseConsts.exerciseN + position, exercise);
     }
 
+    public void tabSelected(int tabPosition) {
+        view.selectTab(tabPosition);
+    }
+
 }

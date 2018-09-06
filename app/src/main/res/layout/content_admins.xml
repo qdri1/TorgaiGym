@@ -17,7 +17,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:tabMode="scrollable" />
 
-    <android.support.v4.view.ViewPager
+    <com.torgaigym.torgai.torgaigym.compat.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
