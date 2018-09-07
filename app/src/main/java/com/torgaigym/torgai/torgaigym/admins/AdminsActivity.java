@@ -3,20 +3,15 @@ package com.torgaigym.torgai.torgaigym.admins;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.torgaigym.torgai.torgaigym.R;
 import com.torgaigym.torgai.torgaigym.adapters.PagerAdapter;
-import com.torgaigym.torgai.torgaigym.compat.ViewPager;
 import com.torgaigym.torgai.torgaigym.dialogs.GymDialogs;
 import com.torgaigym.torgai.torgaigym.firebase.FirebaseUtilsModel;
-import com.torgaigym.torgai.torgaigym.fragments.DayFiveFragment;
-import com.torgaigym.torgai.torgaigym.fragments.DayFourFragment;
-import com.torgaigym.torgai.torgaigym.fragments.DayOneFragment;
-import com.torgaigym.torgai.torgaigym.fragments.DayThreeFragment;
-import com.torgaigym.torgai.torgaigym.fragments.DayTwoFragment;
 import com.torgaigym.torgai.torgaigym.presenter.AdminsPresenter;
 
 public class AdminsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, View.OnClickListener {
@@ -45,25 +40,7 @@ public class AdminsActivity extends AppCompatActivity implements TabLayout.OnTab
         viewPager = findViewById(R.id.pager);
         adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
-//        viewPager.addOnPageChangeListener((ViewPager.OnPageChangeListener) new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                System.out.println("#########onPageSelected: " + adapter.getItem(position - 1));
-                System.out.println("#########onPageSelected: " + adapter.getItem(position));
-                adapter.replaceFragmetns(viewPager, adapter.getItem(position - 1), adapter.getItem(position));
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         tabLayout.addOnTabSelectedListener(this);
 

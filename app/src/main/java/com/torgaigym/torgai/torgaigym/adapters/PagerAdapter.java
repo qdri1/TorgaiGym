@@ -2,9 +2,8 @@ package com.torgaigym.torgai.torgaigym.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.view.View;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.torgaigym.torgai.torgaigym.compat.FragmentStatePagerAdapter;
 import com.torgaigym.torgai.torgaigym.fragments.DayFiveFragment;
 import com.torgaigym.torgai.torgaigym.fragments.DayFourFragment;
 import com.torgaigym.torgai.torgaigym.fragments.DayOneFragment;
@@ -24,43 +23,18 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new DayOneFragment();
+                return DayOneFragment.newInstance();
             case 1:
-                return new DayTwoFragment();
+                return DayTwoFragment.newInstance();
             case 2:
-                return new DayThreeFragment();
+                return DayThreeFragment.newInstance();
             case 3:
-                return new DayFourFragment();
+                return DayFourFragment.newInstance();
             case 4:
-                return new DayFiveFragment();
+                return DayFiveFragment.newInstance();
             default:
                 return null;
         }
-    }
-
-    @Override
-    protected void handleGetItemInbalidated(View container, Fragment oldFragment, Fragment newFragment) {
-        System.out.println("#########oldFragment: " + oldFragment);
-        System.out.println("#########newFragment: " + newFragment);
-
-        int position = getFragmentPosition(newFragment);
-
-
-    }
-
-    @Override
-    protected int getFragmentPosition(Fragment fragment) {
-
-
-        switch (fragment.getClass().getSimpleName()) {
-            case "asd":
-
-                break;
-        }
-        System.out.println("#########classes1: " + fragment.getClass().getSimpleName());
-        System.out.println("#########classes2: " + DayFourFragment.TAG);
-
-        return 0;
     }
 
     @Override

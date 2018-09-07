@@ -31,21 +31,18 @@ public class DayThreeFragment extends Fragment implements DaysInterface {
     private ExercisesListAdapter adapter;
     private List<List<Exercise>> groups = new ArrayList<>();
 
-    public DayThreeFragment() {
-        // Required empty public constructor
+    public static DayThreeFragment newInstance() {
+        Bundle args = new Bundle();
+        DayThreeFragment fragment = new DayThreeFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_day_one, container, false);
         expandableListView = v.findViewById(R.id.exp_list_view);
-
-        FirebaseUtilsModel model = new FirebaseUtilsModel();
-        presenter = new DaysPresenter(model);
-        presenter.attachView(this);
-        presenter.loadExercises(FirebaseConsts.dayThree);
         return v;
     }
 
@@ -55,16 +52,28 @@ public class DayThreeFragment extends Fragment implements DaysInterface {
 
     @Override
     public void updateList(List<Exercise> exercises) {
-        System.out.println("###########3");
-        groups.add(exercises);
-        if (!groups.isEmpty()) {
-            adapter = new ExercisesListAdapter(getContext(), groups);
-            expandableListView.setAdapter(adapter);
+        groups = new ArrayList<>();
+        if (!exercises.isEmpty()) {
+            groups.add(exercises);
         }
+        adapter = new ExercisesListAdapter(getContext(), groups);
+        expandableListView.setAdapter(adapter);
     }
 
     @Override
     public String getFragmentTag() {
         return TAG;
     }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed()) {
+            FirebaseUtilsModel model = new FirebaseUtilsModel();
+            presenter = new DaysPresenter(model);
+            presenter.attachView(this);
+            presenter.loadExercises(FirebaseConsts.dayThree);
+        }
+    }
+
 }
