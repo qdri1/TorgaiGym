@@ -6,6 +6,4 @@ import java.util.List;
 
 public interface DaysInterface {
     void updateList(List<Exercise> exercises);
-
-    String getFragmentTag();
 }

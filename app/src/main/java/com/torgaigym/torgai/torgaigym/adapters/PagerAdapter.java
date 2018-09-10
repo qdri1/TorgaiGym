@@ -4,37 +4,28 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.torgaigym.torgai.torgaigym.fragments.DayFiveFragment;
-import com.torgaigym.torgai.torgaigym.fragments.DayFourFragment;
-import com.torgaigym.torgai.torgaigym.fragments.DayOneFragment;
-import com.torgaigym.torgai.torgaigym.fragments.DayThreeFragment;
-import com.torgaigym.torgai.torgaigym.fragments.DayTwoFragment;
+import com.torgaigym.torgai.torgaigym.fragments.DaysFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
 
     private int tabs;
+    private List<Fragment> fragments;
 
     public PagerAdapter(FragmentManager fm, int tabs) {
         super(fm);
         this.tabs = tabs;
+        fragments = new ArrayList<>();
     }
 
     @Override
     public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-                return DayOneFragment.newInstance();
-            case 1:
-                return DayTwoFragment.newInstance();
-            case 2:
-                return DayThreeFragment.newInstance();
-            case 3:
-                return DayFourFragment.newInstance();
-            case 4:
-                return DayFiveFragment.newInstance();
-            default:
-                return null;
+        if (fragments.size() < 5) {
+            fragments.add(DaysFragment.newInstance(position));
         }
+        return fragments.get(position);
     }
 
     @Override
@@ -43,19 +34,6 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     }
 
     public int getPositionOfLastAddedExercise(int currentDayPosition) {
-        switch (currentDayPosition) {
-            case 0:
-                return new DayOneFragment().lastPositionOfList();
-            case 1:
-                return new DayTwoFragment().lastPositionOfList();
-            case 2:
-                return new DayThreeFragment().lastPositionOfList();
-            case 3:
-                return new DayFourFragment().lastPositionOfList();
-            case 4:
-                return new DayFiveFragment().lastPositionOfList();
-            default:
-                return 0;
-        }
+        return ((DaysFragment) fragments.get(currentDayPosition)).getLastPositionOfList();
     }
 }
