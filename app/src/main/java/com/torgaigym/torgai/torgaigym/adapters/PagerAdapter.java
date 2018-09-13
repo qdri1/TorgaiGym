@@ -1,5 +1,6 @@
 package com.torgaigym.torgai.torgaigym.adapters;
 
+import android.support.annotation.IntRange;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -12,20 +13,20 @@ import java.util.List;
 public class PagerAdapter extends FragmentStatePagerAdapter {
 
     private int tabs;
-    private List<Fragment> fragments;
+    private Fragment fragments[];
 
     public PagerAdapter(FragmentManager fm, int tabs) {
         super(fm);
         this.tabs = tabs;
-        fragments = new ArrayList<>();
+        fragments = new Fragment[tabs];
     }
 
     @Override
-    public Fragment getItem(int position) {
-        if (fragments.size() < 5) {
-            fragments.add(DaysFragment.newInstance(position));
+    public Fragment getItem(@IntRange(from = 0, to = 4) int position) {
+        if (fragments.length < 5) {
+            fragments[position] = DaysFragment.newInstance(position);
         }
-        return fragments.get(position);
+        return fragments[position];
     }
 
     @Override
@@ -34,6 +35,6 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     }
 
     public int getPositionOfLastAddedExercise(int currentDayPosition) {
-        return ((DaysFragment) fragments.get(currentDayPosition)).getLastPositionOfList();
+        return ((DaysFragment) fragments[currentDayPosition]).getLastPositionOfList();
     }
 }
