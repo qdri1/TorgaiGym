@@ -12,6 +12,7 @@ import com.torgaigym.torgai.torgaigym.R;
 import com.torgaigym.torgai.torgaigym.adapters.ExercisesListAdapter;
 import com.torgaigym.torgai.torgaigym.classes.Exercise;
 import com.torgaigym.torgai.torgaigym.consts.TorgaiGymConsts;
+import com.torgaigym.torgai.torgaigym.dialogs.GymDialogs;
 import com.torgaigym.torgai.torgaigym.firebase.FirebaseConsts;
 import com.torgaigym.torgai.torgaigym.firebase.FirebaseUtilsModel;
 import com.torgaigym.torgai.torgaigym.interfaces.DaysInterface;
@@ -23,14 +24,16 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DaysFragment extends Fragment implements DaysInterface {
+public class DaysFragment extends Fragment implements DaysInterface, ExercisesListAdapter.Listener {
 
     public static final String TAG = DaysFragment.class.getSimpleName();
 
     private DaysPresenter presenter;
     private ExercisesListAdapter adapter;
     private ExpandableListView expandableListView;
-    private List<List<Exercise>> groups = new ArrayList<>();
+    private List<List<Exercise>> groups;
+    private boolean[] groupsIsExpaned;
+    private boolean init = true;
 
     public static DaysFragment newInstance(int position) {
 
@@ -56,18 +59,31 @@ public class DaysFragment extends Fragment implements DaysInterface {
 
     @Override
     public void updateList(List<Exercise> exercises) {
-        groups = new ArrayList<>();
+        if (init) {
+            init = false;
+            groups = new ArrayList<>();
 
-        if (!exercises.isEmpty()) {
-            for (int i = 0; i < exercises.size(); i++) {
-                groups.add(new ArrayList<Exercise>());
-                groups.get(i).add(exercises.get(i));
+            if (!exercises.isEmpty()) {
+                for (int i = 0; i < exercises.size(); i++) {
+                    groups.add(new ArrayList<Exercise>());
+                    groups.get(i).add(exercises.get(i));
+                }
             }
-        }
 
-        if (!groups.isEmpty()) {
-            adapter = new ExercisesListAdapter(getContext(), groups);
-            expandableListView.setAdapter(adapter);
+            if (!groups.isEmpty()) {
+                if (groupsIsExpaned == null) {
+                    groupsIsExpaned = new boolean[groups.size()];
+                }
+                adapter = new ExercisesListAdapter(getContext(), groups, this);
+                expandableListView.setAdapter(adapter);
+                for (int i = 0; i < groupsIsExpaned.length; i++) {
+                    if (groupsIsExpaned[i]) {
+                        expandableListView.expandGroup(i);
+                    } else {
+                        expandableListView.collapseGroup(i);
+                    }
+                }
+            }
         }
     }
 
@@ -80,5 +96,31 @@ public class DaysFragment extends Fragment implements DaysInterface {
             presenter.attachView(this);
             presenter.loadExercises(FirebaseConsts.getDayConstByDayPosition(getArguments().getInt(TorgaiGymConsts.POSITION)));
         }
+    }
+
+    @Override
+    public void onGroupItemClicked(int position, boolean isExpanded) {
+        if (isExpanded) {
+            expandableListView.collapseGroup(position);
+            groupsIsExpaned[position] = false;
+        } else {
+            expandableListView.expandGroup(position);
+            groupsIsExpaned[position] = true;
+        }
+    }
+
+    @Override
+    public void onChildItemClicked(final int position, String name, String desc) {
+        GymDialogs.updateExercisesDialog(getContext(), getString(R.string.label_edit_exercise), name, desc, new GymDialogs.TextInputListener() {
+            @Override
+            public void onClick(String name, String desc) {
+                presenter.updateExercise(getArguments().getInt(TorgaiGymConsts.POSITION), position, name, desc);
+            }
+        }).show();
+    }
+
+    @Override
+    public void updateCurrentItem(int position, String name, String desc) {
+        adapter.updateChildByPosition(position, new Exercise(name, desc));
     }
 }

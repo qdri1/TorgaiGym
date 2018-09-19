@@ -31,11 +31,11 @@ public class AdminsActivity extends AppCompatActivity implements TabLayout.OnTab
 
     private void initView() {
         TabLayout tabLayout = findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.day_1)));
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.day_2)));
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.day_3)));
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.day_4)));
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.day_5)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.day_1_shrt)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.day_2_shrt)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.day_3_shrt)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.day_4_shrt)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.day_5_shrt)));
 
         viewPager = findViewById(R.id.pager);
         adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());

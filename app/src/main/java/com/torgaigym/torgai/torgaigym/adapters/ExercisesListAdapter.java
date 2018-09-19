@@ -11,17 +11,18 @@ import android.widget.TextView;
 import com.torgaigym.torgai.torgaigym.R;
 import com.torgaigym.torgai.torgaigym.classes.Exercise;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ExercisesListAdapter extends BaseExpandableListAdapter {
 
     private List<List<Exercise>> mGroups;
     private Context context;
+    private Listener listener;
 
-    public ExercisesListAdapter(Context context, List<List<Exercise>> mGroups) {
+    public ExercisesListAdapter(Context context, List<List<Exercise>> mGroups, Listener listener) {
         this.mGroups = mGroups;
         this.context = context;
+        this.listener = listener;
     }
 
     @Override
@@ -60,7 +61,7 @@ public class ExercisesListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+    public View getGroupView(final int groupPosition, final boolean isExpanded, View convertView, ViewGroup parent) {
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -74,13 +75,22 @@ public class ExercisesListAdapter extends BaseExpandableListAdapter {
         }
 
         TextView textView = convertView.findViewById(R.id.textGroup);
-        textView.setText("Group " + Integer.toString(groupPosition));
+        textView.setText(context.getString(R.string.set_of_exercise) + " " + Integer.toString(groupPosition + 1));
+
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.onGroupItemClicked(groupPosition, isExpanded);
+                }
+            }
+        });
 
         return convertView;
     }
 
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.day_list_item_child, null);
@@ -91,12 +101,32 @@ public class ExercisesListAdapter extends BaseExpandableListAdapter {
         text1View.setText(mGroups.get(groupPosition).get(childPosition).getName());
         text2View.setText(mGroups.get(groupPosition).get(childPosition).getDescription());
 
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.onChildItemClicked(groupPosition, mGroups.get(groupPosition).get(childPosition).getName(), mGroups.get(groupPosition).get(childPosition).getDescription());
+                }
+            }
+        });
+
         return convertView;
     }
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
+    }
+
+    public interface Listener {
+        void onGroupItemClicked(int position, boolean isExpanded);
+
+        void onChildItemClicked(int position, String name, String desc);
+    }
+
+    public void updateChildByPosition(int position, Exercise exercise) {
+        mGroups.get(position).set(0, exercise);
+        notifyDataSetChanged();
     }
 
 }

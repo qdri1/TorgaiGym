@@ -22,10 +22,8 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
-    public Fragment getItem(@IntRange(from = 0, to = 4) int position) {
-        if (fragments.length < 5) {
-            fragments[position] = DaysFragment.newInstance(position);
-        }
+    public Fragment getItem(int position) {
+        fragments[position] = DaysFragment.newInstance(position);
         return fragments[position];
     }
 

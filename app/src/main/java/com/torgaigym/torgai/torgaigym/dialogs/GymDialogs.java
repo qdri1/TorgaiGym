@@ -38,6 +38,34 @@ public class GymDialogs {
         return dialogBuilder.create();
     }
 
+    public static AlertDialog updateExercisesDialog(final Context context, String title, String name, String desc, final TextInputListener listener) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.add_exercises_dialog_view, null);
+        TextView titleView = view.findViewById(R.id.title);
+        titleView.setText(title);
+        final EditText editNameView = view.findViewById(R.id.name);
+        editNameView.setText(name);
+        editNameView.setSelection(name.length());
+        final EditText editDescView = view.findViewById(R.id.desc);
+        editDescView.setText(desc);
+        dialogBuilder.setView(view);
+        dialogBuilder.setNegativeButton(R.string.action_no, null);
+        dialogBuilder.setPositiveButton(R.string.action_save, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (TextUtils.isEmpty(editNameView.getText())) {
+                    editNameView.setError(context.getString(R.string.label_error_empty_text));
+                } else if (TextUtils.isEmpty(editDescView.getText())) {
+                    editDescView.setError(context.getString(R.string.label_error_empty_text));
+                } else {
+                    listener.onClick(editNameView.getText().toString(), editDescView.getText().toString());
+                }
+            }
+        });
+        return dialogBuilder.create();
+    }
+
     public interface TextInputListener {
         void onClick(String name, String desc);
     }

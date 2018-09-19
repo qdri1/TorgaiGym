@@ -14,6 +14,14 @@
     <string name="day_4">Четверг</string>
     <string name="day_5">Пятница</string>
 
+    <string name="day_1_shrt">Пн</string>
+    <string name="day_2_shrt">Вт</string>
+    <string name="day_3_shrt">Ср</string>
+    <string name="day_4_shrt">Чт</string>
+    <string name="day_5_shrt">Пт</string>
+
+    <string name="set_of_exercise">Комплекс</string>
+
     <!--actions-->
     <string name="action_no">Нет</string>
     <string name="action_yes">Да</string>
@@ -25,5 +33,6 @@
     <string name="label_desc">Описание</string>
     <string name="label_error_empty_text">Поле не может быть пустым!</string>
     <string name="label_add_exercise">Добавить упражнение</string>
+    <string name="label_edit_exercise">Изменить упражнение</string>
 
 </resources>
