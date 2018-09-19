@@ -77,15 +77,22 @@ public class ExercisesListAdapter extends BaseExpandableListAdapter {
         TextView textView = convertView.findViewById(R.id.textGroup);
         textView.setText(context.getString(R.string.set_of_exercise) + " " + Integer.toString(groupPosition + 1));
 
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
+        if (listener != null) {
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     listener.onGroupItemClicked(groupPosition, isExpanded);
                 }
-            }
-        });
+            });
 
+            convertView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    listener.onLongGroupItemClicked(groupPosition);
+                    return false;
+                }
+            });
+        }
         return convertView;
     }
 
@@ -101,14 +108,14 @@ public class ExercisesListAdapter extends BaseExpandableListAdapter {
         text1View.setText(mGroups.get(groupPosition).get(childPosition).getName());
         text2View.setText(mGroups.get(groupPosition).get(childPosition).getDescription());
 
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
+        if (listener != null) {
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     listener.onChildItemClicked(groupPosition, mGroups.get(groupPosition).get(childPosition).getName(), mGroups.get(groupPosition).get(childPosition).getDescription());
                 }
-            }
-        });
+            });
+        }
 
         return convertView;
     }
@@ -121,11 +128,18 @@ public class ExercisesListAdapter extends BaseExpandableListAdapter {
     public interface Listener {
         void onGroupItemClicked(int position, boolean isExpanded);
 
+        void onLongGroupItemClicked(int position);
+
         void onChildItemClicked(int position, String name, String desc);
     }
 
     public void updateChildByPosition(int position, Exercise exercise) {
         mGroups.get(position).set(0, exercise);
+        notifyDataSetChanged();
+    }
+
+    public void removeItemByPosition(int position) {
+        mGroups.remove(position);
         notifyDataSetChanged();
     }
 

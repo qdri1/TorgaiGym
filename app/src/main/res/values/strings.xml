@@ -34,5 +34,6 @@
     <string name="label_error_empty_text">Поле не может быть пустым!</string>
     <string name="label_add_exercise">Добавить упражнение</string>
     <string name="label_edit_exercise">Изменить упражнение</string>
+    <string name="label_delete_exercise">Удалить упражнение</string>
 
 </resources>

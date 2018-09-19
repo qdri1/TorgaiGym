@@ -66,8 +66,25 @@ public class GymDialogs {
         return dialogBuilder.create();
     }
 
+    public static AlertDialog deleteExercisesDialog(final Context context, String title, final OnClickListener listener) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+        dialogBuilder.setTitle(title);
+        dialogBuilder.setNegativeButton(R.string.action_no, null);
+        dialogBuilder.setPositiveButton(R.string.action_yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                listener.onClick();
+            }
+        });
+        return dialogBuilder.create();
+    }
+
     public interface TextInputListener {
         void onClick(String name, String desc);
+    }
+
+    public interface OnClickListener {
+        void onClick();
     }
 
 }

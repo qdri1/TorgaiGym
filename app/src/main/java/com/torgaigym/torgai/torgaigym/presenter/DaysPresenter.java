@@ -33,10 +33,16 @@ public class DaysPresenter {
         });
     }
 
-    public void updateExercise(int currentItemPosition, int position, String name, String desc) {
-        view.updateCurrentItem(position, name, desc);
+    public void updateExercise(int currentItemPosition, int position, String exerciseId, String name, String desc) {
         String dayConst = FirebaseConsts.getDayConstByDayPosition(currentItemPosition);
-        Exercise exercise = new Exercise(name, desc);
-        model.writeDayExercises(dayConst, FirebaseConsts.exerciseN + position, exercise);
+        Exercise exercise = new Exercise(exerciseId, name, desc);
+        view.updateCurrentItem(position, exercise);
+        model.writeDayExercises(dayConst, exerciseId, exercise);
+    }
+
+    public void deleteExercise(int currentItemPosition, int position, String exerciseId) {
+        view.removeCurrentItem(position);
+        String dayConst = FirebaseConsts.getDayConstByDayPosition(currentItemPosition);
+        model.deleteDayExercises(dayConst, exerciseId);
     }
 }

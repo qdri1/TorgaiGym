@@ -32,7 +32,6 @@ public class DaysFragment extends Fragment implements DaysInterface, ExercisesLi
     private ExercisesListAdapter adapter;
     private ExpandableListView expandableListView;
     private List<List<Exercise>> groups;
-    private boolean[] groupsIsExpaned;
     private boolean init = true;
 
     public static DaysFragment newInstance(int position) {
@@ -71,20 +70,18 @@ public class DaysFragment extends Fragment implements DaysInterface, ExercisesLi
             }
 
             if (!groups.isEmpty()) {
-                if (groupsIsExpaned == null) {
-                    groupsIsExpaned = new boolean[groups.size()];
-                }
                 adapter = new ExercisesListAdapter(getContext(), groups, this);
                 expandableListView.setAdapter(adapter);
-                for (int i = 0; i < groupsIsExpaned.length; i++) {
-                    if (groupsIsExpaned[i]) {
-                        expandableListView.expandGroup(i);
-                    } else {
-                        expandableListView.collapseGroup(i);
-                    }
-                }
             }
         }
+    }
+
+
+    public void addItemToList(Exercise exercise) {
+        groups.add(new ArrayList<Exercise>());
+        groups.get(groups.size() - 1).add(exercise);
+        adapter = new ExercisesListAdapter(getContext(), groups, this);
+        expandableListView.setAdapter(adapter);
     }
 
     @Override
@@ -102,11 +99,19 @@ public class DaysFragment extends Fragment implements DaysInterface, ExercisesLi
     public void onGroupItemClicked(int position, boolean isExpanded) {
         if (isExpanded) {
             expandableListView.collapseGroup(position);
-            groupsIsExpaned[position] = false;
         } else {
             expandableListView.expandGroup(position);
-            groupsIsExpaned[position] = true;
         }
+    }
+
+    @Override
+    public void onLongGroupItemClicked(final int position) {
+        GymDialogs.deleteExercisesDialog(getContext(), getString(R.string.label_delete_exercise), new GymDialogs.OnClickListener() {
+            @Override
+            public void onClick() {
+                presenter.deleteExercise(getArguments().getInt(TorgaiGymConsts.POSITION), position, groups.get(position).get(0).getExerciseId());
+            }
+        }).show();
     }
 
     @Override
@@ -114,13 +119,18 @@ public class DaysFragment extends Fragment implements DaysInterface, ExercisesLi
         GymDialogs.updateExercisesDialog(getContext(), getString(R.string.label_edit_exercise), name, desc, new GymDialogs.TextInputListener() {
             @Override
             public void onClick(String name, String desc) {
-                presenter.updateExercise(getArguments().getInt(TorgaiGymConsts.POSITION), position, name, desc);
+                presenter.updateExercise(getArguments().getInt(TorgaiGymConsts.POSITION), position, groups.get(position).get(0).getExerciseId(), name, desc);
             }
         }).show();
     }
 
     @Override
-    public void updateCurrentItem(int position, String name, String desc) {
-        adapter.updateChildByPosition(position, new Exercise(name, desc));
+    public void updateCurrentItem(int position, Exercise exercise) {
+        adapter.updateChildByPosition(position, exercise);
+    }
+
+    @Override
+    public void removeCurrentItem(int position) {
+        adapter.removeItemByPosition(position);
     }
 }

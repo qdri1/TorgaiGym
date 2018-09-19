@@ -28,8 +28,9 @@ public class AdminsPresenter {
 
     public void saveExercise(int currentItemPosition, int position, String name, String desc) {
         String dayConst = FirebaseConsts.getDayConstByDayPosition(currentItemPosition);
-        Exercise exercise = new Exercise(name, desc);
-        model.writeDayExercises(dayConst, FirebaseConsts.exerciseN + position, exercise);
+        Exercise exercise = new Exercise(FirebaseConsts.exerciseN + position, name, desc);
+        view.updateDayList(exercise);
+        model.writeDayExercises(dayConst, exercise.getExerciseId(), exercise);
     }
 
     public void tabSelected(int tabPosition) {

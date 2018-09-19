@@ -24,6 +24,10 @@ public class FirebaseUtilsModel {
         mDatabase.child(FirebaseConsts.dayExerciseId).child(dayId).child(exerciseId).setValue(exercise);
     }
 
+    public void deleteDayExercises(final String dayId, String exerciseId) {
+        mDatabase.child(FirebaseConsts.dayExerciseId).child(dayId).child(exerciseId).removeValue();
+    }
+
     public void readDayExercises(String dayId, final ExerciseListener listener) {
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override

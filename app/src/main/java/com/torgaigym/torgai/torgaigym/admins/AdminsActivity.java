@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.torgaigym.torgai.torgaigym.R;
 import com.torgaigym.torgai.torgaigym.adapters.PagerAdapter;
+import com.torgaigym.torgai.torgaigym.classes.Exercise;
 import com.torgaigym.torgai.torgaigym.dialogs.GymDialogs;
 import com.torgaigym.torgai.torgaigym.firebase.FirebaseUtilsModel;
 import com.torgaigym.torgai.torgaigym.presenter.AdminsPresenter;
@@ -64,6 +65,10 @@ public class AdminsActivity extends AppCompatActivity implements TabLayout.OnTab
                 presenter.saveExercise(viewPager.getCurrentItem(), adapter.getPositionOfLastAddedExercise(viewPager.getCurrentItem()), name, desc);
             }
         }).show();
+    }
+
+    public void updateDayList(Exercise exercise) {
+        adapter.addItemToDayPosition(viewPager.getCurrentItem(), exercise);
     }
 
     @Override
