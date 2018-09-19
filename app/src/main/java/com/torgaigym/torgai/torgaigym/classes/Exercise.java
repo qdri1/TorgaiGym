@@ -6,6 +6,10 @@ public class Exercise {
     private String name;
     private String description;
 
+    public Exercise() {
+        
+    }
+
     public Exercise(String exerciseId, String name, String description) {
         this.exerciseId = exerciseId;
         this.name = name;
