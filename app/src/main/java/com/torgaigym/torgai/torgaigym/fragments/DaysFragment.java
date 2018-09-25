@@ -34,12 +34,13 @@ public class DaysFragment extends Fragment implements DaysInterface, ExercisesLi
     private List<List<Exercise>> groups;
     private boolean init = true;
 
-    public static DaysFragment newInstance(int position) {
+    public static DaysFragment newInstance(int position, boolean isAdmin) {
 
         Bundle args = new Bundle();
 
         DaysFragment fragment = new DaysFragment();
         args.putInt(TorgaiGymConsts.POSITION, position);
+        args.putBoolean(TorgaiGymConsts.IS_ADMIN, isAdmin);
         fragment.setArguments(args);
         return fragment;
     }
@@ -70,7 +71,7 @@ public class DaysFragment extends Fragment implements DaysInterface, ExercisesLi
             }
 
             if (!groups.isEmpty()) {
-                adapter = new ExercisesListAdapter(getContext(), groups, this);
+                adapter = new ExercisesListAdapter(getContext(), groups, getArguments().getBoolean(TorgaiGymConsts.IS_ADMIN) ? this : null);
                 expandableListView.setAdapter(adapter);
             }
         }
@@ -80,7 +81,7 @@ public class DaysFragment extends Fragment implements DaysInterface, ExercisesLi
     public void addItemToList(Exercise exercise) {
         groups.add(new ArrayList<Exercise>());
         groups.get(groups.size() - 1).add(exercise);
-        adapter = new ExercisesListAdapter(getContext(), groups, this);
+        adapter = new ExercisesListAdapter(getContext(), groups, getArguments().getBoolean(TorgaiGymConsts.IS_ADMIN) ? this : null);
         expandableListView.setAdapter(adapter);
     }
 

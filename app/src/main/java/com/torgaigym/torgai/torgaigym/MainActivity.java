@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(R.id.nav_plan);
         navigationView.setNavigationItemSelectedListener(this);
     }
 

@@ -39,7 +39,7 @@ public class AdminsActivity extends AppCompatActivity implements TabLayout.OnTab
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.day_5_shrt)));
 
         viewPager = findViewById(R.id.pager);
-        adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), true);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 

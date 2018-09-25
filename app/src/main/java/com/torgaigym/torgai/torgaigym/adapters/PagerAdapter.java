@@ -11,16 +11,18 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
     private int tabs;
     private Fragment fragments[];
+    private boolean isAdmin;
 
-    public PagerAdapter(FragmentManager fm, int tabs) {
+    public PagerAdapter(FragmentManager fm, int tabs, boolean isAdmin) {
         super(fm);
         this.tabs = tabs;
+        this.isAdmin = isAdmin;
         fragments = new Fragment[tabs];
     }
 
     @Override
     public Fragment getItem(int position) {
-        fragments[position] = DaysFragment.newInstance(position);
+        fragments[position] = DaysFragment.newInstance(position, isAdmin);
         return fragments[position];
     }
 
