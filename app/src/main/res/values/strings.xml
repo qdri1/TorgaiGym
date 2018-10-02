@@ -38,4 +38,9 @@
     <string name="navigation_drawer_open">Navigation open</string>
     <string name="navigation_drawer_close">Navigation close</string>
 
+    <string name="t_1">T1</string>
+    <string name="t_2">T2</string>
+    <string name="tabata_rounds">Кол. раундов</string>
+
+
 </resources>

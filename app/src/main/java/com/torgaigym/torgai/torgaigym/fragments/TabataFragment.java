@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.torgaigym.torgai.torgaigym.R;
+import com.torgaigym.torgai.torgaigym.dialogs.GymDialogs;
 
 import java.io.IOException;
 
@@ -35,6 +37,7 @@ public class TabataFragment extends Fragment {
 
     private TextView artistNameView, musicNameView, timerView;
     private Button playButton, chooseMusicButton, resetTimerButton;
+    private FloatingActionButton tabataTimerButton;
     private SeekBar seekBar;
     private MediaPlayer mediaPlayer;
     private String uriStr;
@@ -42,6 +45,7 @@ public class TabataFragment extends Fragment {
     private Handler timerHandler = new Handler();
     private long startTime = 0;
     private boolean resetTimer = false;
+    private int tT1 = 0, tT2 = 0, tRounds = 0, totalTimerSeconds = 0;
 
     public static TabataFragment newInstance() {
 
@@ -68,6 +72,7 @@ public class TabataFragment extends Fragment {
         seekBar = view.findViewById(R.id.seek_bar);
         timerView = view.findViewById(R.id.timer);
         resetTimerButton = view.findViewById(R.id.reset_timer_button);
+        tabataTimerButton = view.findViewById(R.id.tabata_timer_button);
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int seekProgress;
@@ -92,11 +97,17 @@ public class TabataFragment extends Fragment {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (uriStr != null) {
-                    if (playButton.getText().toString().equalsIgnoreCase("Play")) {
-                        playMusic(uriStr);
+                if (tT1 == 0 && tT2 == 0 && tRounds == 0) {
+                    Toast.makeText(getContext(), "Добавьте время Табата!", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (uriStr != null) {
+                        if (playButton.getText().toString().equalsIgnoreCase("Play")) {
+                            playMusic(uriStr);
+                        } else {
+                            pauseMusic();
+                        }
                     } else {
-                        pauseMusic();
+                        Toast.makeText(getContext(), "Выберите музыку!", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -116,6 +127,21 @@ public class TabataFragment extends Fragment {
             }
         });
 
+        tabataTimerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GymDialogs.tabataTimerExercise(getContext(), getString(R.string.nav_tabata), new GymDialogs.TimerInputListener() {
+                    @Override
+                    public void onClick(int t1, int t2, int rounds) {
+                        tT1 = t1;
+                        tT2 = t2;
+                        tRounds = rounds;
+                        totalTimerSeconds = (tT1 + tT2) * tRounds;
+                    }
+                }).show();
+            }
+        });
+
         checkPermission();
     }
 
@@ -123,14 +149,14 @@ public class TabataFragment extends Fragment {
         @Override
         public void run() {
             if (mediaPlayer != null) {
-                seekBar.setProgress(mediaPlayer.getCurrentPosition());
-                if (!mediaPlayer.isPlaying()) { //mediaPlayer.getCurrentPosition() >= mediaPlayer.getDuration()
+                if (!mediaPlayer.isPlaying()) {
                     handler.removeCallbacks(this);
                     seekBar.setProgress(0);
                     playButton.setText("Play");
-                } else {
-                    handler.postDelayed(this, 100);
+                    return;
                 }
+                seekBar.setProgress(mediaPlayer.getCurrentPosition());
+                handler.postDelayed(this, 100);
             }
         }
     };
@@ -140,8 +166,13 @@ public class TabataFragment extends Fragment {
         public void run() {
             long millis = System.currentTimeMillis() - startTime;
             int seconds = (int) (millis / 1000);
+            if (seconds > totalTimerSeconds) {
+                timerHandler.removeCallbacks(this);
+                return;
+            }
             int minutes = seconds / 60;
             seconds = seconds % 60;
+            System.out.println("");
 
             timerView.setText(String.format("%d:%02d", minutes, seconds));
 

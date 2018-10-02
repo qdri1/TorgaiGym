@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/app_name" />
+
+    <EditText
+        android:id="@+id/t_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/t_1"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/t_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/t_2"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/tabata_rounds"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/tabata_rounds"
+        android:inputType="numberDecimal" />
+
+</LinearLayout>
