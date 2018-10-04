@@ -42,7 +42,7 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
     private TextView artistNameView, musicNameView, timerView, musicPositionView, tabataInfoView;
     private FloatingActionButton tabataTimerButton, chooseMusicButton, playButton, prevButton, nextButton, resetTimerButton;
     private SeekBar seekBar;
-    private MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer, startPlayer, stopPlayer;
     private Handler handler = new Handler();
     private Handler timerHandler = new Handler();
     private long startTime = 0;
@@ -113,6 +113,8 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
         });
 
         vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        stopPlayer = MediaPlayer.create(getContext(), R.raw.tuturu);
+        startPlayer = MediaPlayer.create(getContext(), R.raw.here_we_go_again);
         checkPermission();
     }
 
@@ -339,7 +341,7 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
                 timerView.setText(String.format("%d:%02d", minutes, seconds));
 
                 vibrator.vibrate(200);
-                Toast.makeText(getContext(), "Finish", Toast.LENGTH_SHORT).show();
+                stopPlayer.start();
                 timerHandler.removeCallbacks(this);
                 _rounds = 1;
                 _tT1Helper = 0;
@@ -348,14 +350,14 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
 
             if (seconds > 0) {
                 if (((tT1 * _rounds) + _tT1Helper) % seconds == 0 && ((tT1 * _rounds) + _tT1Helper) / seconds == 1) {
-                    Toast.makeText(getContext(), "Stop", Toast.LENGTH_SHORT).show();
                     vibrator.vibrate(200);
+                    stopPlayer.start();
                 } else if (((tT1 + tT2) * _rounds) % seconds == 0 && ((tT1 + tT2) * _rounds) / seconds == 1) {
                     _rounds++;
                     _tT1Helper += tT2;
-                    Toast.makeText(getContext(), "Start", Toast.LENGTH_SHORT).show();
                     updateTabataInfo();
                     vibrator.vibrate(200);
+                    startPlayer.start();
                 }
             }
 

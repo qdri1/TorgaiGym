@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
 //        sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.app_name) + "\n" +getString(R.string.share_text) + "\n" + "https://play.google.com/store/apps/details?id=com.alimapps.allahnames&hl=ru");
-        sendIntent.putExtra(Intent.EXTRA_TEXT, "Спокойной ночи, Назерке!\n\n" + getString(R.string.app_name) + "\n" + getString(R.string.share_text));
+        sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.app_name) + "\n" + getString(R.string.share_text));
         sendIntent.setType("text/plain");
         startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.nav_share)));
     }
