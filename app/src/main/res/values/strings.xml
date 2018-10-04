@@ -39,9 +39,9 @@
     <string name="navigation_drawer_close">Navigation close</string>
 
     <string name="t_1">T1</string>
-    <string name="t_1_desc">Время работы</string>
+    <string name="t_1_desc">Время работы (сек.)</string>
     <string name="t_2">T2</string>
-    <string name="t_2_desc">Время отдыха</string>
+    <string name="t_2_desc">Время отдыха (сек.)</string>
     <string name="tabata_rounds">Кол. раундов</string>
 
 

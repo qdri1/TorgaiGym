@@ -20,7 +20,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,8 +40,7 @@ import static android.app.Activity.RESULT_OK;
 public class TabataFragment extends Fragment implements View.OnClickListener {
 
     private TextView artistNameView, musicNameView, timerView, musicPositionView, tabataInfoView;
-    private Button playButton, prevButton, nextButton, chooseMusicButton, resetTimerButton;
-    private FloatingActionButton tabataTimerButton;
+    private FloatingActionButton tabataTimerButton, chooseMusicButton, playButton, prevButton, nextButton, resetTimerButton;
     private SeekBar seekBar;
     private MediaPlayer mediaPlayer;
     private Handler handler = new Handler();
@@ -52,7 +50,7 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
     private int tT1 = 0, tT2 = 0, tRounds = 0, totalTimerSeconds = 0;
     private List<Music> _musics = new ArrayList<>();
     private int musicPosition = 0;
-    private boolean isPause = false;
+    private boolean isPause = false, isPlay = false;
     private Vibrator vibrator;
     private int _rounds = 1, _tT1Helper = 0;
 
@@ -137,7 +135,7 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
                 resetTimer();
                 break;
             case R.id.tabata_timer_button:
-                onTabataTimerClicked();
+                openTabataDialog();
                 break;
         }
     }
@@ -193,6 +191,7 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
                 startTime = System.currentTimeMillis();
                 timerHandler.postDelayed(timerRunnable, 0);
             }
+            isPlay = true;
             isPause = false;
             if (mediaPlayer != null) {
                 mediaPlayer.start();
@@ -209,7 +208,7 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
                     }
                 });
             }
-            playButton.setText("Pause");
+            playButton.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_media_pause));
             handler.postDelayed(runnable, 100);
         } catch (IOException e) {
             e.printStackTrace();
@@ -218,7 +217,8 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
 
     private void pauseMusic() {
         isPause = true;
-        playButton.setText("Play");
+        isPlay = false;
+        playButton.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_media_play));
         mediaPlayer.pause();
         handler.removeCallbacks(runnable);
     }
@@ -226,7 +226,8 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
     private void stopMusic() {
         if (mediaPlayer != null) {
             isPause = false;
-            playButton.setText("Play");
+            isPlay = false;
+            playButton.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_media_play));
             handler.removeCallbacks(runnable);
             mediaPlayer.stop();
             mediaPlayer.reset();
@@ -250,15 +251,17 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
     private void playMusic() {
         if (tT1 == 0 && tT2 == 0 && tRounds == 0) {
             Toast.makeText(getContext(), "Добавьте время Табата!", Toast.LENGTH_SHORT).show();
+            openTabataDialog();
         } else {
             if (!_musics.isEmpty()) {
-                if (playButton.getText().toString().equalsIgnoreCase("Play")) {
+                if (!isPlay) {
                     playMusic(_musics.get(musicPosition).getUri());
                 } else {
                     pauseMusic();
                 }
             } else {
                 Toast.makeText(getContext(), "Выберите музыку!", Toast.LENGTH_SHORT).show();
+                startChoosing();
             }
         }
     }
@@ -287,17 +290,21 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void onTabataTimerClicked() {
-        GymDialogs.tabataTimerExercise(getContext(), getString(R.string.nav_tabata), new GymDialogs.TimerInputListener() {
-            @Override
-            public void onClick(int t1, int t2, int rounds) {
-                tT1 = t1;
-                tT2 = t2;
-                tRounds = rounds;
-                totalTimerSeconds = (tT1 + tT2) * tRounds;
-                updateTabataInfo();
-            }
-        }).show();
+    private void openTabataDialog() {
+        if (!resetTimer) {
+            GymDialogs.tabataTimerExercise(getContext(), getString(R.string.nav_tabata), new GymDialogs.TimerInputListener() {
+                @Override
+                public void onClick(int t1, int t2, int rounds) {
+                    tT1 = t1;
+                    tT2 = t2;
+                    tRounds = rounds;
+                    totalTimerSeconds = (tT1 + tT2) * tRounds;
+                    updateTabataInfo();
+                }
+            }).show();
+        } else {
+            Toast.makeText(getContext(), "Остановите время!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void updateTabataInfo() {
@@ -311,7 +318,7 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
                 if (!mediaPlayer.isPlaying() && !isPause) {
                     handler.removeCallbacks(this);
                     seekBar.setProgress(0);
-                    playButton.setText("Play");
+                    playButton.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_media_play));
                     onNextButtonClicked();
                     return;
                 }
