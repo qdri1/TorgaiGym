@@ -2,6 +2,7 @@ package com.torgaigym.torgai.torgaigym.fragments;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -10,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -24,28 +26,35 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.torgaigym.torgai.torgaigym.R;
+import com.torgaigym.torgai.torgaigym.classes.Music;
 import com.torgaigym.torgai.torgaigym.dialogs.GymDialogs;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TabataFragment extends Fragment {
+public class TabataFragment extends Fragment implements View.OnClickListener {
 
-    private TextView artistNameView, musicNameView, timerView;
-    private Button playButton, chooseMusicButton, resetTimerButton;
+    private TextView artistNameView, musicNameView, timerView, musicPositionView, tabataInfoView;
+    private Button playButton, prevButton, nextButton, chooseMusicButton, resetTimerButton;
     private FloatingActionButton tabataTimerButton;
     private SeekBar seekBar;
     private MediaPlayer mediaPlayer;
-    private String uriStr;
     private Handler handler = new Handler();
     private Handler timerHandler = new Handler();
     private long startTime = 0;
     private boolean resetTimer = false;
     private int tT1 = 0, tT2 = 0, tRounds = 0, totalTimerSeconds = 0;
+    private List<Music> _musics = new ArrayList<>();
+    private int musicPosition = 0;
+    private boolean isPause = false;
+    private Vibrator vibrator;
+    private int _rounds = 1, _tT1Helper = 0;
 
     public static TabataFragment newInstance() {
 
@@ -67,12 +76,23 @@ public class TabataFragment extends Fragment {
     private void initView(View view) {
         artistNameView = view.findViewById(R.id.artist_name);
         musicNameView = view.findViewById(R.id.music_name);
+        musicPositionView = view.findViewById(R.id.music_position);
+        tabataInfoView = view.findViewById(R.id.tabata_info);
         playButton = view.findViewById(R.id.play_button);
+        prevButton = view.findViewById(R.id.prev_button);
+        nextButton = view.findViewById(R.id.next_button);
         chooseMusicButton = view.findViewById(R.id.choose_button);
         seekBar = view.findViewById(R.id.seek_bar);
         timerView = view.findViewById(R.id.timer);
         resetTimerButton = view.findViewById(R.id.reset_timer_button);
         tabataTimerButton = view.findViewById(R.id.tabata_timer_button);
+
+        playButton.setOnClickListener(this);
+        prevButton.setOnClickListener(this);
+        nextButton.setOnClickListener(this);
+        chooseMusicButton.setOnClickListener(this);
+        resetTimerButton.setOnClickListener(this);
+        tabataTimerButton.setOnClickListener(this);
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int seekProgress;
@@ -94,91 +114,33 @@ public class TabataFragment extends Fragment {
             }
         });
 
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (tT1 == 0 && tT2 == 0 && tRounds == 0) {
-                    Toast.makeText(getContext(), "Добавьте время Табата!", Toast.LENGTH_SHORT).show();
-                } else {
-                    if (uriStr != null) {
-                        if (playButton.getText().toString().equalsIgnoreCase("Play")) {
-                            playMusic(uriStr);
-                        } else {
-                            pauseMusic();
-                        }
-                    } else {
-                        Toast.makeText(getContext(), "Выберите музыку!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        });
-
-        chooseMusicButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startChoosing();
-            }
-        });
-
-        resetTimerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetTimer();
-            }
-        });
-
-        tabataTimerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GymDialogs.tabataTimerExercise(getContext(), getString(R.string.nav_tabata), new GymDialogs.TimerInputListener() {
-                    @Override
-                    public void onClick(int t1, int t2, int rounds) {
-                        tT1 = t1;
-                        tT2 = t2;
-                        tRounds = rounds;
-                        totalTimerSeconds = (tT1 + tT2) * tRounds;
-                    }
-                }).show();
-            }
-        });
-
+        vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
         checkPermission();
     }
 
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mediaPlayer != null) {
-                if (!mediaPlayer.isPlaying()) {
-                    handler.removeCallbacks(this);
-                    seekBar.setProgress(0);
-                    playButton.setText("Play");
-                    return;
-                }
-                seekBar.setProgress(mediaPlayer.getCurrentPosition());
-                handler.postDelayed(this, 100);
-            }
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.play_button:
+                playMusic();
+                break;
+            case R.id.prev_button:
+                onPrevButtonClicked();
+                break;
+            case R.id.next_button:
+                onNextButtonClicked();
+                break;
+            case R.id.choose_button:
+                startChoosing();
+                break;
+            case R.id.reset_timer_button:
+                resetTimer();
+                break;
+            case R.id.tabata_timer_button:
+                onTabataTimerClicked();
+                break;
         }
-    };
-
-    private Runnable timerRunnable = new Runnable() {
-        @Override
-        public void run() {
-            long millis = System.currentTimeMillis() - startTime;
-            int seconds = (int) (millis / 1000);
-            if (seconds > totalTimerSeconds) {
-                timerHandler.removeCallbacks(this);
-                return;
-            }
-            int minutes = seconds / 60;
-            seconds = seconds % 60;
-            System.out.println("");
-
-            timerView.setText(String.format("%d:%02d", minutes, seconds));
-
-            timerHandler.postDelayed(this, 500);
-        }
-    };
+    }
 
     private void startChoosing() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
@@ -195,10 +157,20 @@ public class TabataFragment extends Fragment {
                 if (cursor.moveToFirst()) {
                     String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                     String name = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME));
-                    artistNameView.setText(artist);
-                    musicNameView.setText(name);
-                    uriStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-                    stopMusic();
+                    String uriStr = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+
+                    if (!_musics.isEmpty()) {
+                        for (Music music : _musics) {
+                            if (artist.equals(music.getArtist()) && name.equals(music.getName())) {
+                                Toast.makeText(getContext(), "Это музыка уже добавлена!", Toast.LENGTH_SHORT).show();
+                                cursor.close();
+                                return;
+                            }
+                        }
+                    }
+
+                    _musics.add(new Music(artist, name, uriStr));
+                    updateMusicList();
                 }
                 cursor.close();
             }
@@ -206,9 +178,12 @@ public class TabataFragment extends Fragment {
     }
 
     private void resetTimer() {
+        _rounds = 1;
+        _tT1Helper = 0;
         resetTimer = false;
         timerHandler.removeCallbacks(timerRunnable);
         timerView.setText("0:00");
+        updateTabataInfo();
     }
 
     private void playMusic(String uri) {
@@ -218,6 +193,7 @@ public class TabataFragment extends Fragment {
                 startTime = System.currentTimeMillis();
                 timerHandler.postDelayed(timerRunnable, 0);
             }
+            isPause = false;
             if (mediaPlayer != null) {
                 mediaPlayer.start();
             } else {
@@ -241,6 +217,7 @@ public class TabataFragment extends Fragment {
     }
 
     private void pauseMusic() {
+        isPause = true;
         playButton.setText("Play");
         mediaPlayer.pause();
         handler.removeCallbacks(runnable);
@@ -248,7 +225,9 @@ public class TabataFragment extends Fragment {
 
     private void stopMusic() {
         if (mediaPlayer != null) {
+            isPause = false;
             playButton.setText("Play");
+            handler.removeCallbacks(runnable);
             mediaPlayer.stop();
             mediaPlayer.reset();
             mediaPlayer.release();
@@ -256,6 +235,129 @@ public class TabataFragment extends Fragment {
             seekBar.setProgress(0);
         }
     }
+
+    private void updateMusicList() {
+        artistNameView.setText(_musics.get(musicPosition).getArtist());
+        musicNameView.setText(_musics.get(musicPosition).getName());
+        musicPositionView.setText((musicPosition + 1) + " / " + _musics.size());
+    }
+
+    private void startNextMusic() {
+        stopMusic();
+        playMusic();
+    }
+
+    private void playMusic() {
+        if (tT1 == 0 && tT2 == 0 && tRounds == 0) {
+            Toast.makeText(getContext(), "Добавьте время Табата!", Toast.LENGTH_SHORT).show();
+        } else {
+            if (!_musics.isEmpty()) {
+                if (playButton.getText().toString().equalsIgnoreCase("Play")) {
+                    playMusic(_musics.get(musicPosition).getUri());
+                } else {
+                    pauseMusic();
+                }
+            } else {
+                Toast.makeText(getContext(), "Выберите музыку!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void onPrevButtonClicked() {
+        if (!_musics.isEmpty() && _musics.size() > 1) {
+            if (musicPosition == 0) {
+                musicPosition = _musics.size() - 1;
+            } else {
+                musicPosition--;
+            }
+            updateMusicList();
+            startNextMusic();
+        }
+    }
+
+    private void onNextButtonClicked() {
+        if (!_musics.isEmpty() && _musics.size() > 1) {
+            if (musicPosition == _musics.size() - 1) {
+                musicPosition = 0;
+            } else {
+                musicPosition++;
+            }
+            updateMusicList();
+            startNextMusic();
+        }
+    }
+
+    private void onTabataTimerClicked() {
+        GymDialogs.tabataTimerExercise(getContext(), getString(R.string.nav_tabata), new GymDialogs.TimerInputListener() {
+            @Override
+            public void onClick(int t1, int t2, int rounds) {
+                tT1 = t1;
+                tT2 = t2;
+                tRounds = rounds;
+                totalTimerSeconds = (tT1 + tT2) * tRounds;
+                updateTabataInfo();
+            }
+        }).show();
+    }
+
+    private void updateTabataInfo() {
+        tabataInfoView.setText("Work: " + tT1 + " seconds\n" + "Rest: " + tT2 + " seconds\n" + "Rounds: " + _rounds + " / " + tRounds + " rounds");
+    }
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mediaPlayer != null) {
+                if (!mediaPlayer.isPlaying() && !isPause) {
+                    handler.removeCallbacks(this);
+                    seekBar.setProgress(0);
+                    playButton.setText("Play");
+                    onNextButtonClicked();
+                    return;
+                }
+                seekBar.setProgress(mediaPlayer.getCurrentPosition());
+                handler.postDelayed(this, 100);
+            }
+        }
+    };
+
+    private Runnable timerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            long millis = System.currentTimeMillis() - startTime;
+            int seconds = (int) (millis / 1000);
+            if (seconds >= totalTimerSeconds) {
+                int minutes = seconds / 60;
+                seconds = seconds % 60;
+                timerView.setText(String.format("%d:%02d", minutes, seconds));
+
+                vibrator.vibrate(200);
+                Toast.makeText(getContext(), "Finish", Toast.LENGTH_SHORT).show();
+                timerHandler.removeCallbacks(this);
+                _rounds = 1;
+                _tT1Helper = 0;
+                return;
+            }
+
+            if (seconds > 0) {
+                if (((tT1 * _rounds) + _tT1Helper) % seconds == 0 && ((tT1 * _rounds) + _tT1Helper) / seconds == 1) {
+                    Toast.makeText(getContext(), "Stop", Toast.LENGTH_SHORT).show();
+                    vibrator.vibrate(200);
+                } else if (((tT1 + tT2) * _rounds) % seconds == 0 && ((tT1 + tT2) * _rounds) / seconds == 1) {
+                    _rounds++;
+                    _tT1Helper += tT2;
+                    Toast.makeText(getContext(), "Start", Toast.LENGTH_SHORT).show();
+                    updateTabataInfo();
+                    vibrator.vibrate(200);
+                }
+            }
+
+            int minutes = seconds / 60;
+            seconds = seconds % 60;
+            timerView.setText(String.format("%d:%02d", minutes, seconds));
+            timerHandler.postDelayed(this, 500);
+        }
+    };
 
     private void checkPermission() {
         if (Build.VERSION.SDK_INT >= 23) {

@@ -33,16 +33,42 @@
                     android:layout_height="wrap_content"
                     android:text="Music name" />
 
+                <TextView
+                    android:id="@+id/music_position"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0/0" />
+
                 <SeekBar
                     android:id="@+id/seek_bar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <Button
-                    android:id="@+id/play_button"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Play" />
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/prev_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Prev" />
+
+                    <Button
+                        android:id="@+id/play_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Play" />
+
+                    <Button
+                        android:id="@+id/next_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Next" />
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/timer"
@@ -55,6 +81,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Reset timer" />
+
+                <TextView
+                    android:id="@+id/tabata_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tabata info" />
 
             </LinearLayout>
 

@@ -14,14 +14,14 @@
         android:id="@+id/t_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/t_1"
+        android:hint="@string/t_1_desc"
         android:inputType="numberDecimal" />
 
     <EditText
         android:id="@+id/t_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/t_2"
+        android:hint="@string/t_2_desc"
         android:inputType="numberDecimal" />
 
     <EditText
