@@ -32,18 +32,21 @@
 
                     <TextView
                         android:id="@+id/artist_name"
+                        style="@style/RobotoTextViewStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Author name" />
 
                     <TextView
                         android:id="@+id/music_name"
+                        style="@style/RobotoTextViewStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Music name" />
 
                     <TextView
                         android:id="@+id/music_position"
+                        style="@style/RobotoTextViewStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0/0" />
@@ -99,6 +102,7 @@
 
                     <TextView
                         android:id="@+id/timer"
+                        style="@style/RobotoTextViewStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0:00" />
@@ -112,6 +116,7 @@
 
                     <TextView
                         android:id="@+id/tabata_info"
+                        style="@style/RobotoTextViewStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
