@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -310,7 +311,7 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
     }
 
     private void updateTabataInfo() {
-        tabataInfoView.setText("Work: " + tT1 + " seconds\n" + "Rest: " + tT2 + " seconds\n" + "Rounds: " + _rounds + " / " + tRounds + " rounds");
+        tabataInfoView.setText("Rounds: " + _rounds + " / " + tRounds + " rounds\n" + "Work: " + tT1 + " seconds\n" + "Rest: " + tT2 + " seconds");
     }
 
     private Runnable runnable = new Runnable() {
@@ -350,14 +351,40 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
 
             if (seconds > 0) {
                 if (((tT1 * _rounds) + _tT1Helper) % seconds == 0 && ((tT1 * _rounds) + _tT1Helper) / seconds == 1) {
+
+                    float l = (float) 0.1;
+                    float r = (float) 0.1;
+                    mediaPlayer.setVolume(l, r);
+
                     vibrator.vibrate(200);
                     stopPlayer.start();
                 } else if (((tT1 + tT2) * _rounds) % seconds == 0 && ((tT1 + tT2) * _rounds) / seconds == 1) {
                     _rounds++;
                     _tT1Helper += tT2;
                     updateTabataInfo();
+
+                    float l = (float) 0.1;
+                    float r = (float) 0.1;
+                    mediaPlayer.setVolume(l, r);
+
+                    tabataInfoView.setTypeface(tabataInfoView.getTypeface(), Typeface.BOLD);
+                    tabataInfoView.setTextColor(getResources().getColor(R.color.colorAccent));
+
                     vibrator.vibrate(200);
                     startPlayer.start();
+                }
+
+                if (seconds % ((tT1 * _rounds) + _tT1Helper) == 1) {
+                    float l = (float) 1.0;
+                    float r = (float) 1.0;
+                    mediaPlayer.setVolume(l, r);
+                } else if (_rounds > 1 && seconds % ((tT1 + tT2) * (_rounds - 1)) == 1) {
+                    float l = (float) 1.0;
+                    float r = (float) 1.0;
+                    mediaPlayer.setVolume(l, r);
+
+                    tabataInfoView.setTypeface(tabataInfoView.getTypeface(), Typeface.NORMAL);
+                    tabataInfoView.setTextColor(getResources().getColor(android.R.color.black));
                 }
             }
 

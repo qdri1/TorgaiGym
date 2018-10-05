@@ -107,8 +107,35 @@ public class GymDialogs {
         return dialogBuilder.create();
     }
 
+    public static AlertDialog inputDialog(final Context context, String title, final SimpleTextInputListener listener) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.input_dialog_view, null);
+        TextView titleView = view.findViewById(R.id.title);
+        titleView.setText(title);
+        final EditText editView = view.findViewById(R.id.value);
+        dialogBuilder.setView(view);
+        dialogBuilder.setCancelable(false);
+        dialogBuilder.setNegativeButton(R.string.action_cancel, null);
+        dialogBuilder.setPositiveButton(R.string.action_continue, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (TextUtils.isEmpty(editView.getText())) {
+                    editView.setError(context.getString(R.string.label_error_empty_text));
+                } else {
+                    listener.onClick(editView.getText().toString());
+                }
+            }
+        });
+        return dialogBuilder.create();
+    }
+
     public interface TextInputListener {
         void onClick(String name, String desc);
+    }
+
+    public interface SimpleTextInputListener {
+        void onClick(String value);
     }
 
     public interface OnClickListener {

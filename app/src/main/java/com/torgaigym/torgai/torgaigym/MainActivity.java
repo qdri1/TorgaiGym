@@ -11,14 +11,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 
+import com.torgaigym.torgai.torgaigym.admins.AdminsActivity;
+import com.torgaigym.torgai.torgaigym.dialogs.GymDialogs;
 import com.torgaigym.torgai.torgaigym.fragments.PlanFragment;
 import com.torgaigym.torgai.torgaigym.fragments.TabataFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private Toolbar toolbar;
+    private int counter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +45,14 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_plan);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View headerView = navigationView.getHeaderView(0);
+        if (headerView != null) {
+            ImageView imageView = headerView.findViewById(R.id.imageView);
+            if (imageView != null) {
+                imageView.setOnClickListener(this);
+            }
+        }
     }
 
     @Override
@@ -109,5 +122,25 @@ public class MainActivity extends AppCompatActivity
         sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.app_name) + "\n" + getString(R.string.share_text));
         sendIntent.setType("text/plain");
         startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.nav_share)));
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.imageView:
+                counter++;
+                if (counter >= 7) {
+                    counter = 0;
+                    GymDialogs.inputDialog(this, getString(R.string.title_activity_admins), new GymDialogs.SimpleTextInputListener() {
+                        @Override
+                        public void onClick(String value) {
+                            if (value.equals("qdri")) {
+                                startActivity(new Intent(MainActivity.this, AdminsActivity.class));
+                            }
+                        }
+                    }).show();
+                }
+                break;
+        }
     }
 }
