@@ -48,7 +48,7 @@ public class DaysFragment extends Fragment implements DaysInterface, ExercisesLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_day_one, container, false);
+        View v = inflater.inflate(R.layout.fragment_days, container, false);
         expandableListView = v.findViewById(R.id.exp_list_view);
         return v;
     }
