@@ -13,15 +13,24 @@ import com.torgaigym.torgai.torgaigym.R;
 
 public class GymDialogs {
 
-    public static AlertDialog tabataTimerExercise(final Context context, String title, final TimerInputListener listener) {
+    public static AlertDialog tabataTimerExercise(final Context context, String title, int tT1, int tT2, int tRounds, final TimerInputListener listener) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.add_tabata_timer_dialog_view, null);
         TextView titleView = view.findViewById(R.id.title);
         titleView.setText(title);
         final EditText t1View = view.findViewById(R.id.t_1);
+        if (tT1 != 0) {
+            t1View.setText(String.valueOf(tT1));
+        }
         final EditText t2View = view.findViewById(R.id.t_2);
+        if (tT2 != 0) {
+            t2View.setText(String.valueOf(tT2));
+        }
         final EditText tabataRoundsView = view.findViewById(R.id.tabata_rounds);
+        if (tRounds != 0) {
+            tabataRoundsView.setText(String.valueOf(tRounds));
+        }
         dialogBuilder.setView(view);
         dialogBuilder.setNegativeButton(R.string.action_no, null);
         dialogBuilder.setPositiveButton(R.string.action_save, new DialogInterface.OnClickListener() {

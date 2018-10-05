@@ -185,6 +185,7 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
         timerHandler.removeCallbacks(timerRunnable);
         timerView.setText("0:00");
         updateTabataInfo();
+        pauseMusic();
     }
 
     private void playMusic(String uri) {
@@ -247,13 +248,15 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
     }
 
     private void startNextMusic() {
-        stopMusic();
-        playMusic();
+        if (isPlay) {
+            stopMusic();
+            playMusic();
+        }
     }
 
     private void playMusic() {
         if (tT1 == 0 && tT2 == 0 && tRounds == 0) {
-            Toast.makeText(getContext(), "Добавьте время Табата!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Настройте время!", Toast.LENGTH_SHORT).show();
             openTabataDialog();
         } else {
             if (!_musics.isEmpty()) {
@@ -263,7 +266,7 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
                     pauseMusic();
                 }
             } else {
-                Toast.makeText(getContext(), "Выберите музыку!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Добавьте музыку!", Toast.LENGTH_SHORT).show();
                 startChoosing();
             }
         }
@@ -295,7 +298,7 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
 
     private void openTabataDialog() {
         if (!resetTimer) {
-            GymDialogs.tabataTimerExercise(getContext(), getString(R.string.nav_tabata), new GymDialogs.TimerInputListener() {
+            GymDialogs.tabataTimerExercise(getContext(), getString(R.string.nav_tabata), tT1, tT2, tRounds, new GymDialogs.TimerInputListener() {
                 @Override
                 public void onClick(int t1, int t2, int rounds) {
                     tT1 = t1;
@@ -306,12 +309,12 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
                 }
             }).show();
         } else {
-            Toast.makeText(getContext(), "Остановите время!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Завершите тренировку!", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void updateTabataInfo() {
-        tabataInfoView.setText("Rounds: " + _rounds + " / " + tRounds + " rounds\n" + "Work: " + tT1 + " seconds\n" + "Rest: " + tT2 + " seconds");
+        tabataInfoView.setText("Раунд: " + _rounds + " / " + tRounds + " раундов\n" + "Работа: " + tT1 + " сек.\n" + "Отдых: " + tT2 + " сек.");
     }
 
     private Runnable runnable = new Runnable() {

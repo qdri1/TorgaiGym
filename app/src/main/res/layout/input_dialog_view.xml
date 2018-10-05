@@ -6,12 +6,16 @@
 
     <TextView
         android:id="@+id/title"
+        style="@style/RobotoTextViewStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="@string/app_name" />
+        android:hint="@string/app_name"
+        android:padding="5dp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/value"
+        style="@style/RobotoTextViewStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
