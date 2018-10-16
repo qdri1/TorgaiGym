@@ -1,6 +1,9 @@
 package com.torgaigym.torgai.torgaigym.fragments;
 
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -48,12 +51,23 @@ public class PlanFragment extends Fragment implements TabLayout.OnTabSelectedLis
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.day_5_shrt)));
 
         viewPager = view.findViewById(R.id.pager);
-        adapter = new PagerAdapter(getActivity().getSupportFragmentManager(), tabLayout.getTabCount(), false);
-        viewPager.setAdapter(adapter);
+        if (hasInternetConn()) {
+            view.findViewById(R.id.internet_connection).setVisibility(View.GONE);
+            adapter = new PagerAdapter(getActivity().getSupportFragmentManager(), tabLayout.getTabCount(), false);
+            viewPager.setAdapter(adapter);
+        } else {
+            view.findViewById(R.id.internet_connection).setVisibility(View.VISIBLE);
+        }
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         tabLayout.addOnTabSelectedListener(this);
         autoSelectToday();
+    }
+
+    private boolean hasInternetConn() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
     }
 
     private void autoSelectToday() {

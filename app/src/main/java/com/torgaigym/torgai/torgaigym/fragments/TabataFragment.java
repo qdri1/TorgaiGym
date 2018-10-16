@@ -115,7 +115,7 @@ public class TabataFragment extends Fragment implements View.OnClickListener {
 
         vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
         stopPlayer = MediaPlayer.create(getContext(), R.raw.tuturu);
-        startPlayer = MediaPlayer.create(getContext(), R.raw.here_we_go_again);
+        startPlayer = MediaPlayer.create(getContext(), R.raw.scream_lets_go_srt_);
         checkPermission();
     }
 

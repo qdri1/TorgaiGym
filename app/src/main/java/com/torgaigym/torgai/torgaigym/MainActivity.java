@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.torgaigym.torgai.torgaigym.admins.AdminsActivity;
 import com.torgaigym.torgai.torgaigym.dialogs.GymDialogs;
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Toast.makeText(getApplicationContext(), getString(R.string.in_development), Toast.LENGTH_SHORT).show();
             return true;
         }
 

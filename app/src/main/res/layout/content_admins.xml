@@ -8,6 +8,17 @@
     tools:context=".admins.AdminsActivity"
     tools:showIn="@layout/activity_admins">
 
+    <TextView
+        android:id="@+id/internet_connection"
+        style="@style/RobotoTextViewStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="@string/connect_to_the_internet"
+        android:visibility="gone" />
+
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
